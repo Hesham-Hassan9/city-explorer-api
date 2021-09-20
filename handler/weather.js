@@ -1,14 +1,14 @@
 'use strict'
 
 const axios = require('axios');
-const cache = require('./handler/cache.js');
+const cache = require('./cache.js');
 
 async function getWeather(req, res) {
   const lat = req.query.lat;
   const lon = req.query.lon;
   const searchQuery = req.query.searchQuery;
   const key = 'weather-' + searchQuery;
-  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.REACT_APP_WEATHER_API_KEY}&city=${searchQuery}&lat=${lat}&lon=${lon}`;
+  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.PORT}&city=${searchQuery}&lat=${lat}&lon=${lon}`;
   
   try {
 
