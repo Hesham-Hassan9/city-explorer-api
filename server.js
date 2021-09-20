@@ -24,15 +24,15 @@ server.get('/', (req, res) => {
 // https://class07-301d33.herokuapp.com/?pokeName=charmander&pokeLevel=10
 server.get('/weather', (req, res) => {
     //   res.send(weatherData);
-    
+
         let cityName = req.query.citName;
-        
+
         console.log(req.query);
         console.log(req.query.citName);
         let weatherInfo = weatherData.find((item) => {
             try {
             if (item.city_name === cityName) {
-                
+
                 return item;
             }
         }
@@ -46,7 +46,7 @@ server.get('/weather', (req, res) => {
         console.log('weatherInfo', weatherInfo);
         res.send(weatherInfo);
 
-    
+
 });
 
 // localhost:3005/ANYTHING
