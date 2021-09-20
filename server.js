@@ -22,32 +22,19 @@ server.get('/', (req, res) => {
 
 // localhost:3005/getPokemon?citName=Amman&pokeLevel=10
 // https://class07-301d33.herokuapp.com/?pokeName=charmander&pokeLevel=10
-server.get('/weather', (req, res) => {
-    //   res.send(weatherData);
-    
-        let cityName = req.query.citName;
-        
-        console.log(req.query);
-        console.log(req.query.citName);
-        let weatherInfo = weatherData.find((item) => {
-            try {
-            if (item.city_name === cityName) {
-                
-                return item;
-            }
-        }
-        catch
-        {
-            console.log("hi");
-            res.status(500).send('Houston, we have an error!');
-        }
-
-        });
-        console.log('weatherInfo', weatherInfo);
-        res.send(weatherInfo);
-
-    
-});
+let weatherHandler = (request, response) => {
+    let lat = request.query.lat;
+    let lon = request.query.lon;
+    getWeather(lat, lon)
+      .then(summaries => response.send(summaries))
+      .catch((error) => {
+        console.error(error);
+        response.status(200).send('Sorry. Something went wrong!');
+      });
+  };
+  
+  // function to gather weather information based on client request query
+  app.get('/weather', weatherHandler);
 
 // localhost:3005/ANYTHING
 server.get('*', (req, res) => {
