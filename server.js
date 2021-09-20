@@ -1,46 +1,59 @@
-'use strict'
+'use strict';
 
-const axios = require('axios');
-const cache = require('./handler/cache.js');
+// make a variable to use the express library
+const express = require('express');
+require('dotenv').config();
+const cors = require('cors');
 
-async function getWeather(req, res) {
-  const lat = req.query.lat;
-  const lon = req.query.lon;
-  const searchQuery = req.query.searchQuery;
-  const key = 'weather-' + searchQuery;
-  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.REACT_APP_WEATHER_API_KEY}&city=${searchQuery}&lat=${lat}&lon=${lon}`;
-  
-  try {
+// serevr has all the properities and methods in express
+const server = express();
 
-    if(!cache[key]) {
-      cache[key] = {};
-      cache[key].timestamp = Date.now();
-      axios.get(url)
-        .then(data => {
+const weatherData = require('./assets/weather.json');
 
-          class Forecast {
-            constructor(datetime, low_temp, high_temp, description) {
-              this.date = datetime;
-              this.lowtemp = low_temp;
-              this.hightemp = high_temp;
-              this.description = description;
-            }
-          }
+const PORT = process.env.PORT;
+server.use(cors());
+
+// localhost:3005/
+// https://class07-301d33.herokuapp.com/
+server.get('/', (req, res) => {
+    res.status(200).send('home route');
+});
+
+
+// localhost:3005/getPokemon?citName=Amman&pokeLevel=10
+// https://class07-301d33.herokuapp.com/?pokeName=charmander&pokeLevel=10
+server.get('/weather', (req, res) => {
+    //   res.send(weatherData);
+    
+        let cityName = req.query.citName;
         
-          let weather = data;
-          let forecastArray = weather.data.data.map( (value, idx) => {
-            return new Forecast(`${value.datetime}`, `Today's low is ${value.low_temp}`, `with a high of ${value.high_temp}`, `and ${value.weather.description}`)
-          })
-        cache[key].data = forecastArray;
-        console.log(cache[key].data);
-        res.send(forecastArray);
-        })
-    }
-    else {
-      res.send(cache[key].data);}
-  } catch(error) {
-    res.status(500).send('Error: Please check your entry and try again', error);
-  }
-}
+        console.log(req.query);
+        console.log(req.query.citName);
+        let weatherInfo = weatherData.find((item) => {
+            try {
+            if (item.city_name === cityName) {
+                
+                return item;
+            }
+        }
+        catch
+        {
+            console.log("hi");
+            res.status(500).send('Houston, we have an error!');
+        }
 
-module.exports = getWeather;
+        });
+        console.log('weatherInfo', weatherInfo);
+        res.send(weatherInfo);
+
+    
+});
+
+// localhost:3005/ANYTHING
+server.get('*', (req, res) => {
+    res.status(404).send('route is not found');
+});
+
+server.listen(PORT, () => {
+    console.log(`Listening on PORT ${PORT}`);
+});
