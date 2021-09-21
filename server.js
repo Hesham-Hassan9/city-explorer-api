@@ -14,39 +14,38 @@ const PORT = process.env.PORT;
 server.use(cors());
 
 // localhost:3005/
-// https://class07-301d33.herokuapp.com/
 server.get('/', (req, res) => {
     res.status(200).send('home route');
 });
 
+class Forcast {
+    constructor(datetime, description) {
+        this.datetime = datetime;
+        this.description = description;
+    }
+}
 
-// localhost:3005/getPokemon?citName=Amman&pokeLevel=10
-// https://class07-301d33.herokuapp.com/?pokeName=charmander&pokeLevel=10
-server.get('/weather', (req, res) => {
+// localhost:3002/getweather?citName=Amman
+server.get('/getweather', (req, res) => {
     //   res.send(weatherData);
 
-        let cityName = req.query.citName;
+    let cityName = req.query.citName;
 
-        console.log(req.query);
-        console.log(req.query.citName);
-        let weatherInfo = weatherData.find((item) => {
-            try {
-            if (item.city_name === cityName) {
+    console.log(req.query);
+    console.log(req.query.citName);
+    let weatherInfo = weatherData.find((item) => {
+        if (item.city_name === cityName) {
 
-                return item;
-            }
+            return item;
         }
-        catch
-        {
-            console.log("hi");
-            res.status(500).send('Houston, we have an error!');
-        }
+    }
 
-        });
-        console.log('weatherInfo', weatherInfo);
-        res.send(weatherInfo);
-
-
+    );
+    let newArr = weatherInfo.data.map(element => {
+        return new Forcast(element.datetime, element.weather.description)
+        
+    });
+    res.send(newArr);
 });
 
 // localhost:3005/ANYTHING
