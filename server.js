@@ -35,7 +35,6 @@ server.get('/getweather', (req, res) => {
     console.log(req.query.citName);
     let weatherInfo = weatherData.find((item) => {
         if (item.city_name === cityName) {
-
             return item;
         }
     }
