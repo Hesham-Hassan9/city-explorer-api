@@ -36,6 +36,7 @@ server.get('/getweather', (req, res) => {
     let weatherInfo = weatherData.find((item) => {
         if (item.city_name === cityName) {
             return item;
+            
         }
     }
 
@@ -44,6 +45,7 @@ server.get('/getweather', (req, res) => {
         return new Forcast(element.datetime, element.weather.description)
         
     });
+    console.log(newArr);
     res.send(newArr);
 });
 
