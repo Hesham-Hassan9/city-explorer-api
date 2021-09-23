@@ -1,6 +1,6 @@
 "use strict";
 
-let cache = {};
+let cacheForMovies = {};
 
 const axios = require("axios");
 
@@ -9,10 +9,10 @@ function moviesHandler(req, res) {
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.API_Movies_KEY}&query=${searchQuery}`;
   // console.log(url);
 
-  if (cache[searchQuery] !== undefined) {
-    console.log("The cache contain data");
-    console.log(cache);
-    res.send(cache[searchQuery]);
+  if (cacheForMovies[searchQuery] !== undefined) {
+    console.log("The cache For Movies contain data");
+    console.log(cacheForMovies);
+    res.send(cacheForMovies[searchQuery]);
   } else {
     console.log("The cache is empty hit API");
     axios
@@ -22,7 +22,7 @@ function moviesHandler(req, res) {
         let newMoviesArray = moviesResults.data.results.map((element) => {
           return new ForecastMovies(element);
         });
-        cache[searchQuery] = newMoviesArray
+        cacheForMovies[searchQuery] = newMoviesArray
         res.send(newMoviesArray);
       })
       .catch((error) => {
