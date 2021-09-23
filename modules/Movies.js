@@ -1,22 +1,34 @@
+"use strict";
+
+let cache = {};
+
 const axios = require("axios");
 
 function moviesHandler(req, res) {
   let searchQuery = req.query.searchQuery;
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.API_Movies_KEY}&query=${searchQuery}`;
-  console.log(url);
-  axios
-    .get(url)
-    .then((moviesResults) => {
-      console.log(moviesResults.data.results);
-      let newMoviesArray = moviesResults.data.results.map((element) => {
-        return new ForecastMovies(element);
-      });
+  // console.log(url);
 
-      res.send(newMoviesArray);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
+  if (cache[searchQuery] !== undefined) {
+    console.log("The cache contain data");
+    console.log(cache);
+    res.send(cache[searchQuery]);
+  } else {
+    console.log("The cache is empty hit API");
+    axios
+      .get(url)
+      .then((moviesResults) => {
+        // console.log(moviesResults.data.results);
+        let newMoviesArray = moviesResults.data.results.map((element) => {
+          return new ForecastMovies(element);
+        });
+        cache[searchQuery] = newMoviesArray
+        res.send(newMoviesArray);
+      })
+      .catch((error) => {
+        res.send(error);
+      });
+  }
 }
 
 class ForecastMovies {
